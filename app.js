@@ -54,11 +54,38 @@ class UI {
    });
    productsDOM.innerHTML = result;
   }
+
+  getBagButtons() {
+    // convert button to an Array from a Nodelist
+    const buttons = [...document.querySelectorAll('.bag-btn')]
+    buttons.forEach(button => {
+      let id = button.dataset.id;
+      let inCart = cart.find(item => item.id === id);
+      // check if products is in the cart OR not
+      if (inCart) {
+        button.innerText = 'In cart';
+        button.disabled = true;
+      } else {
+        button.addEventListener('click', (event) => {
+          event.target.innerText = 'In cart';
+          event.target.disabled = true;
+          // get product from products using ID
+          // add product to the cart
+          // save cart in locak storage
+          // set cart values
+          // display cart item
+          // show the cart
+        })
+      }
+    })
+  }
 }
 
 // Local storage
 class Storage {
-
+  static saveProducts(products) {
+    localStorage.setItem('products', JSON.stringify(products));
+  }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -66,5 +93,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const products = new Products();
   
   //get all products
-  products.getProducts().then(products => ui.displayProducts(products))
+  products.getProducts().then(products => {
+    ui.displayProducts(products);
+    // get products from localStorage
+    Storage.saveProducts(products);
+  }).then(() => {
+    ui.getBagButtons();
+  });
 })
